@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem e cadastro de cursos</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Vinícula Sabor da terra</h1> <!-- Título principal da página -->
+    </header>
+    <main>
+        <section>
+            <!-- Formulário para cadastrar um novo vinho -->
+            <form method="post" action="/vinhos/create">
+                <label for="name">Nome do vinho:</label>
+                <input type="text" name="name" id="name">
+                <label for="description">Descrição do vinho</label>
+                <textarea name="" id="description"></textarea>
+                <input type="submit" value="Cadastrar vinho"> <!-- Botão de envio do formulário -->
+            </form>
+        </section>
+        <section>
+            <ul id="listagemVinhos">
+               
+            </ul> <!-- Lista onde os vinhos serão listados -->
+        </section>
+    </main>
+    <script>
+        function exibirVinhos(){
+            let listagemVinhos = document.getElementById('listagemVinhos'); // Obtém a lista de vinhos pelo ID
+            fetch('/vinhos') // Faz uma requisição para obter os vinhos
+            .then(response => {
+                if(!response.ok){
+                    throw new error('Erro ao carregar os dados'); // Lança um erro se a resposta não for bem-sucedida
+                }
+                return response.json(); // Converte a resposta para JSON
+            })
+            .then(vinhos =>{
+                vinhos.forEach(c => {
+                    let editar = document.createElement('button'); // Cria um botão de edição
+                    let remover = document.createElement('button'); // Cria um botão de remoção
+                    remover.innerText = "Remover"; // Define o texto do botão de remoção
+                    editar.innerText = "Editar"; // Define o texto do botão de edição
+                    remover.addEventListener('click',()=>{ // Adiciona um evento de clique para remover o vinho
+                        removerCurso(c.id);
+                    });
+                    editar.addEventListener('click',()=>{ // Adiciona um evento de clique para editar o vinho
+                        editarCurso(c.id);
+                    });
+                    
+                    let li = document.createElement('li'); // Cria um elemento de lista
+                    li.innerText = `${c.name} - ${c.description}`; // Define o texto do elemento de lista com o nome e a descrição do vinho
+                    li.appendChild(editar); // Adiciona o botão de edição ao elemento de lista
+                    li.appendChild(remover); // Adiciona o botão de remoção ao elemento de lista
+                    listagemVinhos.appendChild(li); // Adiciona o elemento de lista à lista de vinhos
+                    
+                });
+        });
+    }
+    function removerVinho(id){
+        fetch(`/vinhos/${id}`, { method:'DELETE'}) // Faz uma requisição para remover o vinho
+        .then(response => {
+            if(response.ok){
+                alert('Vinho removido com sucesso'); // Exibe um alerta se o vinho for removido com sucesso
+            }else{
+                alert('Vinho não existe ou não pode ser deletado'); // Exibe um alerta se o vinho não puder ser removido
+                console.error('Error:', response); // Registra um erro no console
+            }
+           
+        })
+        .catch(error => console.log('Error:', error)); // Captura e registra erros
+    }
+    function editarVinho(id){
+        window.location.href = `/vinhos/edit/${id}`; // Redireciona para a página de edição do vinho
+    }
+
+    exibirVinhos(); // Chama a função para exibir os vinhos quando a página é carregada
+    </script>
+    
+</body>
+</html>
