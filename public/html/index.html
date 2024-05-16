@@ -17,7 +17,7 @@
                 <label for="name">Nome do vinho:</label>
                 <input type="text" name="name" id="name">
                 <label for="description">Descrição do vinho</label>
-                <textarea name="" id="description"></textarea>
+                <textarea name="description" id="description"></textarea>
                 <input type="submit" value="Cadastrar vinho"> <!-- Botão de envio do formulário -->
             </form>
         </section>
@@ -44,10 +44,10 @@
                     remover.innerText = "Remover"; // Define o texto do botão de remoção
                     editar.innerText = "Editar"; // Define o texto do botão de edição
                     remover.addEventListener('click',()=>{ // Adiciona um evento de clique para remover o vinho
-                        removerCurso(c.id);
+                        removerVinho(c.id);
                     });
                     editar.addEventListener('click',()=>{ // Adiciona um evento de clique para editar o vinho
-                        editarCurso(c.id);
+                        editarVinho(c.id);
                     });
                     
                     let li = document.createElement('li'); // Cria um elemento de lista

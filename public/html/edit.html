@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar vinho</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Projeto Vinhos</h1>
+    </header>
+    <main>
+        <section>
+            <form id="editarVinho">
+                <label for="name">Nome do vinho:</label>
+                <input type="text" name="name" id="name">
+                <label for="description">Descrição do vinho</label>
+                <textarea name="" id="description"></textarea>
+                <input type="submit" value="Cadastrar vinho">
+            </form>
+        </section>
+    </main>
+    <script>
+        let formEdit =document.getElementById('editarVinho');
+        const vinhoId = window.location.pathname.split('/').pop();
+        function carregarDados(){
+            fetch(`/vinhos/${vinhoId}`)
+            .then(response => {
+                if(!response.ok){
+                    throw new error('Erro ao carregar os dados');
+                }
+                return response.json();
+            })
+            .then(vinho =>{
+                document.getElementById('name').value = vinho.name;
+                document.getElementById('description').value = vinho.description;
+            })
+        }
+        formEdit.addEventListener('submit', ()=>{
+            const nameVinho = document.getElementById('name').value;
+            const descriptionVinho = document.getElementById('description').value;
+            fetch(`/vinhos/${vinhoId}`,{
+                method: 'PUT',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: nameVinho,
+                    description: descriptionVinho 
+                })
+            })
+            .then(response => response.json())
+            .then(update =>{
+                alert('Vinho atualizado!')
+            })
+            .catch(error=> console.error ('error:', error));
+        })
+        carregarDados();
+    </script>
+</body>
